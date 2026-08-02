@@ -1,77 +1,200 @@
-# encryp.io
+# CipherLink
 
-<p align="center"><img src="design/logo.png"></p>
+<div align="center">
 
-Prototype of a *secure* real-time peer-to-peer encrypted communication network. Developed in a 36-hour period at a security hackathon.
+<p>
+  <img src="https://img.shields.io/badge/Quantum--Resistant-Encryption-00e639?style=for-the-badge" alt="Quantum-Resistant Encryption" />
+  <img src="https://img.shields.io/badge/aiohttp-Backend-009688?style=for-the-badge" alt="aiohttp backend" />
+  <img src="https://img.shields.io/badge/Vanilla%20JS-Frontend-000000?style=for-the-badge" alt="Vanilla JS frontend" />
+</p>
 
-## Table of Contents
+   <h3>A prototype secure real-time peer-to-peer encrypted communication network.</h3>
 
-- [Example](#Example)
-- [Architecture](#Architecture)
-- [Tech stack/protocols/ideas etc.](#Tech-stack/protocols/ideas-etc.)
-- [Features](#Features)
-- [Design](#Design)
+<p>CipherLink implements end-to-end encryption using Elliptic Curve Diffie-Hellman (ECDH) key exchange with AES-256 symmetric encryption, providing forward secrecy for secure communications.</p>
 
-## Example
+</div>
 
-Clone repo, get the requirements to your local virtual environment:
+---
 
+## Problem
+
+In insecure communication channels, sensitive information is vulnerable to interception, manipulation, and unauthorized access. Users need a way to communicate privately with guarantees that:
+- Only intended recipients can read messages
+- Communications cannot be tampered with
+- Past communications remain secure even if long-term keys are compromised
+- No message history is stored on servers
+
+## Solution
+
+CipherLink provides a complete encrypted communication solution that allows users to:
+
+- Establish secure peer-to-peer connections through a signaling server
+- Perform authenticated Ephemeral Elliptic Curve Diffie-Hellman (ECDHE) key exchange
+- Encrypt all messages with AES-256-GCM using unique session keys
+- Verify message integrity with HMAC-SHA256 authentication
+- Enjoy forward secrecy through ephemeral key exchange
+- Communicate without storing message history on any server
+
+## Key features
+
+- **End-to-End Encryption**: ECDH key exchange (SECP384R1) + AES-256-GCM encryption
+- **Forward Secrecy**: Unique ephemeral keys per session prevent retrospective decryption
+- **Message Authentication**: HMAC-SHA256 ensures message integrity and origin verification
+- **Peer-to-Peer Architecture**: Direct client-to-client communication after server-mediated handshake
+- **Ephemeral Messages**: Messages exist only in memory during transmission
+- **Web Interface**: Modern responsive UI with glassmorphism effects and real-time updates
+- **Command-Line Interface**: Text-based client for advanced users and scripting
+- **Self-Destructing Communications**: No persistent storage of message content
+
+## Project structure
+
+```text
+CipherLink/
+├── encrypio/                 # Core application package
+│   ├── __init__.py
+│   ├── security.py           # Cryptographic operations
+│   ├── database/             # Client data management
+│   │   ├── __init__.py
+│   │   ├── client_model.py
+│   │   └── database.py
+│   ├── web_server.py         # HTTP/WebSocket server
+│   ├── client.py             # Command-line client
+│   ├── messages.py           # Message handling
+│   └── p2p/                  # Peer-to-peer communication
+│       ├── __init__.py
+│       ├── p2p_client.py
+│       └── p2p_server.py
+├── public/                   # Static web assets
+│   ├── index.html            # Main application entry point
+│   ├── app.js                # Frontend application logic
+│   └── design/               # UI assets and animations
+├── keys/                     # Cryptographic key storage
+│   ├── klevas_key.pem        # Demo user key
+│   └── berzas_key.pem        # Demo user key
+├── ssl/                      # TLS certificates
+│   ├── server.crt
+│   └── server.key
+├── requirements.txt          # Python dependencies
+├── render.yaml               # Render.com deployment configuration
+├── USER_MANUAL.md            # Detailed user documentation
+└── README.md                 # This file
 ```
-$ git clone https://github.com/KaroliShp/encryp.io.git
-$ cd encryp.io
-$ pip install -r requirements.txt
+
+## Tech stack
+
+### Backend
+- Python 3.14+
+- aiohttp: WebSocket and HTTP server
+- cryptography: ECDH, AES, HKDF, HMAC implementations
+
+### Frontend
+- HTML5
+- CSS3 (with custom design system)
+- Vanilla JavaScript (ES6+)
+- WebSocket API for real-time communication
+
+### Cryptography
+- Key Exchange: Elliptic Curve Diffie-Hellman (SECP384R1)
+- Symmetric Encryption: AES-256 in GCM mode
+- Key Derivation: HKDF-SHA256
+- Message Authentication: HMAC-SHA256
+- Random Generation: Cryptographically Secure Pseudo-Random Number Generator (CSPRNG)
+
+### Supporting tools
+- OpenSSL: For certificate generation and management
+- pip: Python package management
+
+## Workflow
+
+```text
+User Action
+   ↓
+Client authenticates with server (mTLS)
+   ↓
+Server facilitates ECDH public key exchange
+   ↓
+Clients derive shared secret and session keys
+   ↓
+Messages encrypted with AES-256-GCM + HMAC-SHA256
+   ↓
+Encrypted payloads transmitted peer-to-peer
+   ↓
+Recipient verifies and decrypts messages
+   ↓
+Keys and plaintext discarded after use
 ```
 
-Start the server at localhost:5000:
+## Quick start
 
+### 1. Prerequisites
+
+- Python 3.10+
+- pip package manager
+- Modern web browser (Chrome, Firefox, Safari, Edge)
+- Optional: Git for version control
+
+### 2. Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/your-username/CipherLink.git
+cd CipherLink
+
+# Install dependencies
+pip install -r requirements.txt
 ```
-$ python encrypio/server.py
+
+### 3. Run the application
+
+#### Web Interface (Recommended)
+```bash
+# Start the web server
+python encrypio/web_server.py
+
+# Open in browser
+# Visit: http://localhost:5000
 ```
 
-In separate terminals start two clients which will connec:
+#### Command-Line Interface
+```bash
+# In Terminal 1 - Start first client
+python encrypio/client.py klevas
 
+# In Terminal 2 - Start second client
+python encrypio/client.py berzas
+
+# Follow prompts to establish connection and exchange messages
 ```
-$ python encrypio/client.py klevas
-$ python encrypio/client.py berzas
+
+### 4. Verify installation
+
+```bash
+# Run built-in self-test
+python encrypio/web_server.py --test
+# Should output: [SUCCESS] Web Server created successfully!
 ```
 
-Then once the connection is established, just enter the other UID in one of the terminals (for example `klevas` in berzas terminal) and once you're connected, click enter.
+## Main features and experiences
 
-Example connection screenshot:
+- **Web Interface** (`/`): Full-featured encrypted chat with modern UI
+- **Identity Management**: Generate and manage cryptographic identities
+- **Peer Discovery**: Find and connect to other users on the network
+- **Secure Messaging**: End-to-end encrypted real-time communication
+- **Vault**: Manage encrypted payloads and cryptographic assets
+- **Session Monitoring**: View cryptographic details of active connections
+- **CLI Client** (`encrypio/client.py`): Text-based interface for automation
 
-<p align="center"><img src="design/example.png"></p>
+## Development notes
 
-## Architecture
+- The web server serves static files from the `public` directory
+- WebSocket connections are handled at `/ws/chat`
+- REST API endpoints are available at:
+  - `POST /api/identity/generate` - Create new user identity
+  - `GET /api/nodes` - List available peer nodes
+- Ensure the `keys` directory is included in deployments (contains demo keys)
+- SSL/TLS certificates in the `ssl` directory are used for server authentication
+- The project uses relative paths and should work from any directory when run via `python encrypio/web_server.py`
 
-A diagram of the architecture:
+## License
 
-<p align="center"><img src="design/architecture.png"></p>
-
-Each user has their own *UID* and *public and private key pair*.
-
-End users (Alice and Bob) connect to the server and authenticate with it. Security is achieved by establishing a *TLS connection* (both server and client verification).
-
-One of the end users (the initiator) then asks to establish a connection with the other user(s). After the contacted user(s) has accepted the incomming connection request, the server shares relevant public keys and UIDs with relevant parties. *P2P connection* is then established between the parties.
-
-P2P is secured using *ECDH key exchange* (with key size of 384 bits). *AES* keys of 256 bits size are used thereafter to encrypt the communications. *Forward secrecy* is achieved by using unique symmetric key for each message that gets sent - this gives assurances your session keys will not be compromised even if one of the private keys is compromised.
-
-## Tech stack/protocols/ideas etc.
-
-* Python (sockets, SSL, cryptography libraries)
-* Public key infrastructure (kind of)
-* Cryptography (symmetric ciphers, key-agreement protocols)
-* Networking (communication via TCP-based sockets)
-
-## Features
-
-* Online-only messaging (theoretically, the client could locally hold a limited number of messages for the other party until the other party becomes available)
-
-* No chat history, thus messages are *NEVER* stored on any server (a timer is used to ensure message self-destruction in the clients)
-
-## Design
-
-Some neat design solutions from one of the h4x0rz (gifs)
-
-<p align="center"><img src="design/animation.gif"></p>
-
-<p align="center"><img src="design/animation2.gif"></p>
+This project is released under the MIT License - see the [LICENSE](LICENSE) file for details.
