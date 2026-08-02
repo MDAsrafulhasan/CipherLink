@@ -1,16 +1,23 @@
-# CipherLink
-
 <div align="center">
 
+<img src="detaislogo.jpeg" alt="CipherLink Logo" width="480" />
+
 <p>
+  <a href="https://cipherlink-4awt.onrender.com">
+    <img src="https://img.shields.io/badge/Live%20Demo-Online-brightgreen?style=for-the-badge&logo=render" alt="Live Demo" />
+  </a>
   <img src="https://img.shields.io/badge/Quantum--Resistant-Encryption-00e639?style=for-the-badge" alt="Quantum-Resistant Encryption" />
   <img src="https://img.shields.io/badge/aiohttp-Backend-009688?style=for-the-badge" alt="aiohttp backend" />
   <img src="https://img.shields.io/badge/Vanilla%20JS-Frontend-000000?style=for-the-badge" alt="Vanilla JS frontend" />
 </p>
 
-   <h3>A prototype secure real-time peer-to-peer encrypted communication network.</h3>
+<h3>A prototype secure real-time peer-to-peer encrypted communication network.</h3>
 
 <p>CipherLink implements end-to-end encryption using Elliptic Curve Diffie-Hellman (ECDH) key exchange with AES-256 symmetric encryption, providing forward secrecy for secure communications.</p>
+
+<p>
+  <a href="https://cipherlink-4awt.onrender.com"><strong>🔗 Try the Live Demo</strong></a>
+</p>
 
 </div>
 
@@ -74,6 +81,7 @@ CipherLink/
 ├── ssl/                      # TLS certificates
 │   ├── server.crt
 │   └── server.key
+├── logo.png                  # Project logo
 ├── requirements.txt          # Python dependencies
 ├── render.yaml               # Render.com deployment configuration
 ├── USER_MANUAL.md            # Detailed user documentation
@@ -125,6 +133,8 @@ Keys and plaintext discarded after use
 ```
 
 ## Quick start
+
+> 🌐 **No installation needed** — spin it up instantly on the [live deployment](https://cipherlink-4awt.onrender.com).
 
 ### 1. Prerequisites
 
