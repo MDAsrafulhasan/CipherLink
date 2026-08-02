@@ -16,8 +16,8 @@ let vaultPayloads = [
 
 // Initial Peers Data
 let peerNodes = [
-    { uid: 'berzas', ip: '127.0.0.1:5002', latency: '12ms', uptime: '99.99%', protocol: 'v2.4.1-alpha', status: 'online', hash: '0x8F2D...9A1B' },
-    { uid: 'klevas', ip: '127.0.0.1:5001', latency: '18ms', uptime: '99.95%', protocol: 'v2.4.1-alpha', status: 'online', hash: '0x3B8D...F92A' },
+    { uid: 'berzas', ip: '127.0.0.1:5002', latency: '12ms', uptime: '99.99%', protocol: '', status: 'online', hash: '0x8F2D...9A1B' },
+    { uid: 'klevas', ip: '127.0.0.1:5001', latency: '18ms', uptime: '99.95%', protocol: '', status: 'online', hash: '0x3B8D...F92A' },
     { uid: 'azuolas', ip: '192.168.1.104', latency: '45ms', uptime: '98.50%', protocol: 'v2.3.9-stable', status: 'idle', hash: '0xCC41...3F72' },
     { uid: 'egle', ip: '10.0.0.52', latency: '120ms', uptime: '94.20%', protocol: 'v2.4.0-rc1', status: 'offline', hash: '0x1A9B...E44C' }
 ];
@@ -334,18 +334,22 @@ function sendChatMessage(event) {
     const ivHex = Array.from({length: 16}, () => Math.floor(Math.random()*16).toString(16)).join('');
     const cipherHex = Array.from({length: 24}, () => '0x' + Math.floor(Math.random()*256).toString(16).padStart(2, '0').toUpperCase()).join(' ');
 
-    // Render outgoing message
-    appendChatMessage(currentUid, msgText, signature, ivHex, true);
-    updateHexStream(cipherHex);
-
     // Send via WebSocket if available
     if (socket && socket.readyState === WebSocket.OPEN) {
+        // Don't render outgoing message locally - wait for WebSocket echo
         socket.send(JSON.stringify({
             sender: currentUid,
             recipient: currentPeerUid,
-            text: msgText
+            text: msgText,
+            sig: signature,
+            iv: ivHex,
+            cipher_hex: cipherHex
         }));
     } else {
+        // Fallback: Render outgoing message immediately and simulate peer response
+        appendChatMessage(currentUid, msgText, signature, ivHex, true);
+        updateHexStream(cipherHex);
+
         // Echo automated peer response for simulation
         setTimeout(() => {
             const replySig = '0x' + Math.random().toString(36).substring(2, 10) + '...';

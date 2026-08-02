@@ -57,7 +57,7 @@ async def generate_identity_api(request):
         if existing:
             existing._ik = ik_bytes
         else:
-            db._database.append(ClientModel(uid, ik_bytes))
+            db._clients_list.append(ClientModel(uid, ik_bytes))
 
         return web.json_response({
             'status': 'success',
@@ -71,12 +71,12 @@ async def generate_identity_api(request):
 async def list_nodes_api(request):
     """API endpoint returning all active database nodes"""
     nodes = []
-    for client in db._database:
+    for client in db._clients_list:
         nodes.append({
             'uid': client.get_uid(),
             'public_key_hex': client.get_ik().hex(),
             'status': 'online',
-            'protocol': 'v2.4.1-alpha'
+            'protocol': ''
         })
     return web.json_response({'nodes': nodes})
 
