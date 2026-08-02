@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="logo.png" alt="CipherLink Logo" width="480" />
+<img src="design/logo.png" alt="CipherLink Logo" width="480" />
 
 <p>
   <a href="https://cipherlink-4awt.onrender.com">
