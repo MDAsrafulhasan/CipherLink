@@ -20,9 +20,12 @@ from encrypio.security import (
 from encrypio.database.client_model import ClientModel
 from encrypio.database.database import Database
 
+# Base directory for the project
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 # Global Database instance with default clients
-KLEVAS_KEY_PATH = 'keys/klevas_key.pem'
-BERZAS_KEY_PATH = 'keys/berzas_key.pem'
+KLEVAS_KEY_PATH = os.path.join(BASE_DIR, 'keys', 'klevas_key.pem')
+BERZAS_KEY_PATH = os.path.join(BASE_DIR, 'keys', 'berzas_key.pem')
 
 # Load default keys if available
 clients_db = []
@@ -40,7 +43,7 @@ ws_clients = set()
 
 async def index_handler(request):
     """Serve main static index.html frontend page"""
-    public_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'public')
+    public_dir = os.path.join(BASE_DIR, 'public')
     return web.FileResponse(os.path.join(public_dir, 'index.html'))
 
 async def generate_identity_api(request):
@@ -138,11 +141,14 @@ if __name__ == '__main__':
     parser.add_argument('--test', action='store_true', help="Run server self-test and exit")
     args = parser.parse_args()
 
+    # Override port from environment variable if available (for deployment platforms like Render)
+    port = int(os.environ.get('PORT', args.port))
+
     app = create_app()
 
     if args.test:
         print("[SUCCESS] Web Server created successfully!")
         sys.exit(0)
 
-    print(f"[STARTING] encryp.io Web & WebSocket Server on http://localhost:{args.port}...")
-    web.run_app(app, host='0.0.0.0', port=args.port)
+    print(f"[STARTING] encryp.io Web & WebSocket Server on http://localhost:{port}...")
+    web.run_app(app, host='0.0.0.0', port=port)
